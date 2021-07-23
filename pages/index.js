@@ -20,6 +20,29 @@ function ProfileSidebar(props){
   )
 }
 
+function ProfileRelationsBox(props){
+  return (
+    <ProfileRelationsBoxWrapper>
+      <h2 className="smallTitle">
+        {props.title} ({props.items.length})
+      </h2>
+
+      <ul>
+        {props.items.map((itemAtual) => {            
+          return (
+            <li key={itemAtual}>
+              <a href={`/users/${itemAtual}`}>
+                <img src={`https://github.com/${itemAtual}.png`}/>
+                <span>{itemAtual}</span>
+              </a>
+            </li>
+          )
+        })}
+      </ul>
+    </ProfileRelationsBoxWrapper>
+  )
+}
+
 export default function Home() {
   
   const githubUser = 'larrydiniz';
@@ -33,6 +56,7 @@ export default function Home() {
     title: 'Eu odeio JavaScript',
     image: 'https://i.ibb.co/m9L8G7s/download.jpg'
   }]);
+
   const pessoasFavoritas = [
     'akelesis',
     'agnysbueno',
@@ -41,10 +65,20 @@ export default function Home() {
     'mouraCorazim',
     'pablo-matheus',
   ]
+  const [seguidores, setSeguidores] = React.useState([])
+  React.useEffect(function(){
+    fetch('https://api.github.com/users/larrydiniz/followers')
+    .then( (res) => {
+      return res.json();
+    })
+    .then( (resCompleta) =>{
+      setSeguidores(resCompleta)
+    })
+  }, []) //59:01
 
   return (
     <>
-    <AlurakutMenu />
+    <AlurakutMenu githubUser={githubUser} />
     <MainGrid>
       {/* style="grid-area: profileArea" */}
       <div className="profileArea" style={{ gridArea: 'profileArea' }}>
@@ -91,24 +125,8 @@ export default function Home() {
         </Box>
       </div>
       <div style={{ gridArea: 'profileRelationsArea' }}>
-        <ProfileRelationsBoxWrapper>
-          <h2 className="smallTitle">
-            Pessoas da Comunidade ({ pessoasFavoritas.length})
-          </h2>
+        <ProfileRelationsBox title="Pessoas da Comunidade" items={pessoasFavoritas}/>
 
-          <ul>
-            {pessoasFavoritas.map((itemAtual) => {            
-              return (
-                <li key={itemAtual}>
-                  <a href={`/users/${itemAtual}`}>
-                    <img src={`https://github.com/${itemAtual}.png`}/>
-                    <span>{itemAtual}</span>
-                  </a>
-                </li>
-              )
-            })}
-          </ul>
-        </ProfileRelationsBoxWrapper>
         <ProfileRelationsBoxWrapper>
           <h2 className="smallTitle">
             Comunidades ({ comunidades.length})
