@@ -27,7 +27,7 @@ function ProfileRelationsBox(props){
         {props.title} ({props.items.length})
       </h2>
 
-      <ul>
+      {/* <ul>
         {props.items.map((itemAtual) => {            
           return (
             <li key={itemAtual}>
@@ -38,7 +38,7 @@ function ProfileRelationsBox(props){
             </li>
           )
         })}
-      </ul>
+      </ul> */}
     </ProfileRelationsBoxWrapper>
   )
 }
@@ -74,7 +74,26 @@ export default function Home() {
     .then( (resCompleta) =>{
       setSeguidores(resCompleta)
     })
-  }, []) //59:01
+
+    //API GraphQL
+    fetch('https://graphql.datocms.com/', {
+      method: 'POST',
+      headers: {
+        'Authorization': '9c0385acfbb378a11e101c6b157331',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({ 'query' : `query {
+          allCommunities {
+            id
+            title
+            imageUrl
+            creatorSlug
+          }
+        }`})   
+    })
+    
+  }, []) 
 
   return (
     <>
@@ -125,6 +144,8 @@ export default function Home() {
         </Box>
       </div>
       <div style={{ gridArea: 'profileRelationsArea' }}>
+        <ProfileRelationsBox title="Seguidores" items={seguidores} />
+
         <ProfileRelationsBox title="Pessoas da Comunidade" items={pessoasFavoritas}/>
 
         <ProfileRelationsBoxWrapper>
